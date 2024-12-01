@@ -76,7 +76,7 @@ const CategoryProducts = () => {
   };
 
   // Filter products by search term
-  const filteredBySearch = filteredProducts.filter((product) =>
+  const filteredBySearch = (filteredProducts || []).filter((product) =>
     product.name.toLowerCase().includes(searchTerm.trim().toLowerCase()),
   );
 

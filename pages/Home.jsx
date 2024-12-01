@@ -8,12 +8,20 @@ import Header from "../components/Header";
 const Home = () => {
   const dispatch = useDispatch();
   const { categories, status, error } = useSelector(
-    (state) => state.categories,
+    (state) => state.categories
   );
 
   useEffect(() => {
     dispatch(fetchCategories());
   }, [dispatch]);
+
+  // Moved the category logic outside JSX
+  const laptopCategory = categories?.find(
+    (category) => category.name === "Laptops"
+  );
+  const cameraCategory = categories?.find(
+    (category) => category.name === "Cameras"
+  );
 
   return (
     <div className="home bg-light-subtle">
@@ -30,7 +38,7 @@ const Home = () => {
           src="/images/image1.png"
           className="img-fluid"
           alt="banner"
-          style={{ objectFit: "cover" }} 
+          style={{ objectFit: "cover" }}
         />
       </div>
       <div className="container pt-5">
@@ -113,4 +121,3 @@ const Home = () => {
 };
 
 export default Home;
-

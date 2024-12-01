@@ -5,7 +5,7 @@ export const fetchAddresses = createAsyncThunk(
   "addresses/fetchAddresses",
   async () => {
     const response = await axios.get(
-      `https://ecommerce-app-backend-three.vercel.app/api/address/users/66b5faf7915e6097eb68283c/addresses`,
+      `https://ecommerce-app-backend-red.vercel.app/api/address/users/66b5faf7915e6097eb68283c/addresses`,
     );
     return response.data;
   },
@@ -15,7 +15,7 @@ export const addAddress = createAsyncThunk(
   "addresses/addAddress",
   async (addressData) => {
     const response = await axios.post(
-      `https://ecommerce-app-backend-three.vercel.app/api/address/users/66b5faf7915e6097eb68283c/addresses`,
+      `https://ecommerce-app-backend-red.vercel.app/api/address/users/66b5faf7915e6097eb68283c/addresses`,
       addressData,
     );
     return response.data;
@@ -26,7 +26,7 @@ export const updateAddress = createAsyncThunk(
   "addresses/updateAddress",
   async ({ addressId, updatedAddress }) => {
     const response = await axios.put(
-      `https://ecommerce-app-backend-three.vercel.app/api/address/addresses/${addressId}`,
+      `https://ecommerce-app-backend-red.vercel.app/api/address/addresses/${addressId}`,
       updatedAddress,
     );
     return response.data;
@@ -37,7 +37,7 @@ export const deleteAddress = createAsyncThunk(
   "addresses/deleteAddress",
   async (addressId) => {
     const response = await axios.delete(
-      `https://ecommerce-app-backend-three.vercel.app/api/address/addresses/${addressId}`,
+      `https://ecommerce-app-backend-red.vercel.app/api/address/addresses/${addressId}`,
     );
     return response.data;
   },

@@ -60,10 +60,16 @@ const CategoryProducts = () => {
     setRatingFilter(e.target.value ? Number(e.target.value) : null);
   };
 
+  // Handle price range change
   const handlePriceChange = (e) => {
     const newRange = [...priceRange];
     newRange[e.target.dataset.index] = Number(e.target.value);
     setPriceRange(newRange);
+  };
+
+  // Handle sort change (Low to High, High to Low)
+  const handleSortChange = (e) => {
+    setPriceFilter(e.target.value);
   };
 
   const handleCategoryChange = (e) => {
@@ -197,7 +203,7 @@ const CategoryProducts = () => {
                     name="price"
                     value="lowToHigh"
                     checked={priceFilter === "lowToHigh"}
-                    onChange={handlePriceChange}
+                    onChange={handleSortChange} // Use handleSortChange here
                   />
                   <label className="form-check-label">Price - Low to High</label>
                 </div>
@@ -208,7 +214,7 @@ const CategoryProducts = () => {
                     name="price"
                     value="highToLow"
                     checked={priceFilter === "highToLow"}
-                    onChange={handlePriceChange}
+                    onChange={handleSortChange} // Use handleSortChange here
                   />
                   <label className="form-check-label">Price - High to Low</label>
                 </div>

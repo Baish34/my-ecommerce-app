@@ -4,10 +4,17 @@ import {
   fetchProducts,
   setFilters,
   clearFilters,
-} from "../features/products/productsSlice";
-import ProductCard from "../components/ProductCard";
-import Header from "../components/Header";
+} from "../../features/products/productsSlice";
+import ProductCard from "../../components/ProductCard";
+import Header from "../../components/Header";
 import "bootstrap/dist/css/bootstrap.min.css";
+
+const categoryMap = {
+  "66754d915f83c7d0aad9ebf3": "Accessories",
+  "66754d915f83c7d0aad9ebf0": "Laptops",
+  "66754d915f83c7d0aad9ebf1": "Smartphones",
+  "66754d915f83c7d0aad9ebf2": "Cameras",
+};
 
 const CategoryProducts = () => {
   const dispatch = useDispatch();
@@ -15,22 +22,17 @@ const CategoryProducts = () => {
     (state) => state.products,
   );
 
-  const categoryMap = {
-    "66754d915f83c7d0aad9ebf3": "Accessories",
-    "66754d915f83c7d0aad9ebf0": "Laptops",
-    "66754d915f83c7d0aad9ebf1": "Smartphones",
-    "66754d915f83c7d0aad9ebf2": "Cameras",
-  };
-
-  const [ratingFilter, setRatingFilter] = useState(filters.rating || null);
-  const [priceFilter, setPriceFilter] = useState(filters.price || "lowToHigh");
-  const [categoryFilter, setCategoryFilter] = useState(
-    filters.categories || [],
-  );
+  const [ratingFilter, setRatingFilter] = useState(filters.rating ?? null);
+  const [priceFilter, setPriceFilter] = useState(filters.price ?? "lowToHigh");
+  const [categoryFilter, setCategoryFilter] = useState(filters.categories ?? []);
   const [searchTerm, setSearchTerm] = useState("");
 
   const categories = Array.from(
-    new Set(products.map((product) => categoryMap[product.category])),
+    new Set(
+      products
+        .map((product) => categoryMap[product.category])
+        .filter((category) => category),
+    ),
   );
 
   useEffect(() => {
@@ -38,13 +40,15 @@ const CategoryProducts = () => {
   }, [dispatch]);
 
   useEffect(() => {
+    const selectedCategories = categoryFilter.map((name) =>
+      Object.keys(categoryMap).find((key) => categoryMap[key] === name),
+    );
+
     dispatch(
       setFilters({
         rating: ratingFilter,
         price: priceFilter,
-        categories: categoryFilter.map((name) =>
-          Object.keys(categoryMap).find((key) => categoryMap[key] === name),
-        ),
+        categories: selectedCategories,
         searchTerm: searchTerm.trim().toLowerCase(),
       }),
     );
@@ -75,12 +79,10 @@ const CategoryProducts = () => {
     dispatch(clearFilters());
   };
 
-  // Filter products by search term
   const filteredBySearch = (filteredProducts || []).filter((product) =>
     product.name.toLowerCase().includes(searchTerm.trim().toLowerCase()),
   );
 
-  // Sort products based on selected price filter
   const sortedProducts = React.useMemo(() => {
     const sorted = [...filteredBySearch];
     if (priceFilter === "lowToHigh") {
@@ -93,12 +95,16 @@ const CategoryProducts = () => {
 
   if (status === "loading")
     return <div className="text-center my-5">Loading...</div>;
-  if (error)
-    return <div className="text-center text-danger my-5">Error: {error}</div>;
+  if (status === "error")
+    return (
+      <div className="text-center text-danger my-5">
+        Error: {error || "Something went wrong"}
+      </div>
+    );
 
   return (
     <div>
-      <Header onSearch={setSearchTerm} /> {/* Pass the search handler */}
+      <Header onSearch={setSearchTerm} />
       <div className="container-fluid px-0">
         <div className="row gx-0">
           <div className="col-lg-3 mb-4">
@@ -180,12 +186,12 @@ const CategoryProducts = () => {
           <div className="col-lg-9">
             <div className="bg-light p-4 rounded shadow-sm">
               <h5 className="mb-4">
-                Showing All Products ( {sortedProducts.length} products )
+                Showing All Products ({sortedProducts.length} products)
               </h5>
               <div className="row row-cols-1 row-cols-md-2 row-cols-lg-2 g-4">
                 {sortedProducts.map((product) => (
                   <div className="col mb-4" key={product._id}>
-                    <ProductCard product={product}  />
+                    <ProductCard product={product} />
                   </div>
                 ))}
               </div>

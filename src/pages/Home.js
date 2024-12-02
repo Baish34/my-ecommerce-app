@@ -1,9 +1,9 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import CategoryList from "../components/CategoryList";
-import { fetchCategories } from "../features/categories/categoriesSlice";
-import Header from "../components/Header";
+import CategoryList from "../../components/CategoryList";
+import { fetchCategories } from "../../features/categories/categoriesSlice";
+import Header from "../../components/Header";
 
 const Home = () => {
   const dispatch = useDispatch();

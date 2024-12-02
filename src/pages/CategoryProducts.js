@@ -4,9 +4,9 @@ import {
   fetchProducts,
   setFilters,
   clearFilters,
-} from "../../features/products/productsSlice";
-import ProductCard from "../../components/ProductCard";
-import Header from "../../components/Header";
+} from "../features/products/productsSlice";
+import ProductCard from "../components/ProductCard";
+import Header from "../components/Header";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 const categoryMap = {
@@ -19,20 +19,21 @@ const categoryMap = {
 const CategoryProducts = () => {
   const dispatch = useDispatch();
   const { filteredProducts, status, error, filters, products } = useSelector(
-    (state) => state.products,
+    (state) => state.products
   );
 
   const [ratingFilter, setRatingFilter] = useState(filters.rating ?? null);
   const [priceFilter, setPriceFilter] = useState(filters.price ?? "lowToHigh");
   const [categoryFilter, setCategoryFilter] = useState(filters.categories ?? []);
   const [searchTerm, setSearchTerm] = useState("");
+  const [priceRange, setPriceRange] = useState([0, 4000]); 
 
   const categories = Array.from(
     new Set(
       products
         .map((product) => categoryMap[product.category])
-        .filter((category) => category),
-    ),
+        .filter((category) => category)
+    )
   );
 
   useEffect(() => {
@@ -41,7 +42,7 @@ const CategoryProducts = () => {
 
   useEffect(() => {
     const selectedCategories = categoryFilter.map((name) =>
-      Object.keys(categoryMap).find((key) => categoryMap[key] === name),
+      Object.keys(categoryMap).find((key) => categoryMap[key] === name)
     );
 
     dispatch(
@@ -50,16 +51,19 @@ const CategoryProducts = () => {
         price: priceFilter,
         categories: selectedCategories,
         searchTerm: searchTerm.trim().toLowerCase(),
-      }),
+        priceRange: priceRange,
+      })
     );
-  }, [dispatch, ratingFilter, priceFilter, categoryFilter, searchTerm]);
+  }, [dispatch, ratingFilter, priceFilter, categoryFilter, searchTerm, priceRange]);
 
   const handleRatingChange = (e) => {
     setRatingFilter(e.target.value ? Number(e.target.value) : null);
   };
 
   const handlePriceChange = (e) => {
-    setPriceFilter(e.target.value);
+    const newRange = [...priceRange];
+    newRange[e.target.dataset.index] = Number(e.target.value);
+    setPriceRange(newRange);
   };
 
   const handleCategoryChange = (e) => {
@@ -67,7 +71,7 @@ const CategoryProducts = () => {
     setCategoryFilter((prev) =>
       prev.includes(value)
         ? prev.filter((category) => category !== value)
-        : [...prev, value],
+        : [...prev, value]
     );
   };
 
@@ -76,22 +80,28 @@ const CategoryProducts = () => {
     setPriceFilter("lowToHigh");
     setCategoryFilter([]);
     setSearchTerm(""); // Clear search term
+    setPriceRange([0, 1000]); // Reset price range
     dispatch(clearFilters());
   };
 
   const filteredBySearch = (filteredProducts || []).filter((product) =>
-    product.name.toLowerCase().includes(searchTerm.trim().toLowerCase()),
+    product.name.toLowerCase().includes(searchTerm.trim().toLowerCase())
+  );
+
+  const filteredByPrice = filteredBySearch.filter(
+    (product) =>
+      product.price >= priceRange[0] && product.price <= priceRange[1]
   );
 
   const sortedProducts = React.useMemo(() => {
-    const sorted = [...filteredBySearch];
+    const sorted = [...filteredByPrice];
     if (priceFilter === "lowToHigh") {
       sorted.sort((a, b) => a.price - b.price);
     } else if (priceFilter === "highToLow") {
       sorted.sort((a, b) => b.price - a.price);
     }
     return sorted;
-  }, [filteredBySearch, priceFilter]);
+  }, [filteredByPrice, priceFilter]);
 
   if (status === "loading")
     return <div className="text-center my-5">Loading...</div>;
@@ -119,6 +129,8 @@ const CategoryProducts = () => {
                   Clear
                 </span>
               </h5>
+
+              {/* Category Filter */}
               <div className="mb-4">
                 <h6 className="mb-3">Category</h6>
                 {categories.map((category) => (
@@ -134,6 +146,8 @@ const CategoryProducts = () => {
                   </div>
                 ))}
               </div>
+
+              {/* Rating Filter */}
               <div className="mb-4">
                 <h6 className="mb-3">Rating</h6>
                 {[4, 3, 2, 1].map((star) => (
@@ -152,6 +166,28 @@ const CategoryProducts = () => {
                   </div>
                 ))}
               </div>
+
+              {/* Myntra-like Price Range Slider */}
+              <div className="mb-4">
+                <h6 className="mb-3">Price Range</h6>
+                <input
+                  type="range"
+                  className="form-range"
+                  min="0"
+                  max="4000"
+                  step="10"
+                  value={priceRange[0]}
+                  onChange={handlePriceChange}
+                  data-index="0"
+                  style={{ width: "100%" }}
+                />
+                <div className="d-flex justify-content-between">
+                  <span>${priceRange[0]}</span>
+                  <span>${priceRange[1]}</span>
+                </div>
+              </div>
+
+              {/* Sort By Price */}
               <div className="mb-4">
                 <h6 className="mb-3">Sort by</h6>
                 <div className="form-check">
@@ -163,9 +199,7 @@ const CategoryProducts = () => {
                     checked={priceFilter === "lowToHigh"}
                     onChange={handlePriceChange}
                   />
-                  <label className="form-check-label">
-                    Price - Low to High
-                  </label>
+                  <label className="form-check-label">Price - Low to High</label>
                 </div>
                 <div className="form-check">
                   <input
@@ -176,13 +210,13 @@ const CategoryProducts = () => {
                     checked={priceFilter === "highToLow"}
                     onChange={handlePriceChange}
                   />
-                  <label className="form-check-label">
-                    Price - High to Low
-                  </label>
+                  <label className="form-check-label">Price - High to Low</label>
                 </div>
               </div>
             </div>
           </div>
+
+          {/* Product Listing */}
           <div className="col-lg-9">
             <div className="bg-light p-4 rounded shadow-sm">
               <h5 className="mb-4">

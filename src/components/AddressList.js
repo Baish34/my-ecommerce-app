@@ -6,6 +6,8 @@ import {
   deleteAddress,
   selectAddress,
 } from "../features/address/addressSlice";
+import Header from "./Header";
+import "bootstrap/dist/css/bootstrap.min.css";
 
 const AddressList = () => {
   const dispatch = useDispatch();
@@ -14,7 +16,7 @@ const AddressList = () => {
   const status = useSelector((state) => state.addresses.status);
   const error = useSelector((state) => state.addresses.error);
   const selectedAddressId = useSelector(
-    (state) => state.addresses.selectedAddressId,
+    (state) => state.addresses.selectedAddressId
   );
 
   useEffect(() => {
@@ -42,49 +44,66 @@ const AddressList = () => {
 
   return (
     <>
-      <div className="border border-grey rounded p-2">
-        <h3>Saved Delivery Addresses</h3>
-        {status === "loading" && <p>fetching addresses...</p>}
-        {error && <p>{error}</p>}
-        {addresses.map((address) => (
-          <div
-            key={address._id}
-            className="border border-grey py-2 rounded container mb-3"
-          >
-            <div className="d-flex justify-content-between align-items-center">
-              <label>
-                <input
-                  type="radio"
-                  name="address"
-                  value={address._id}
-                  checked={selectedAddressId === address._id}
-                  onChange={() => handleSelect(address._id)}
-                />
-                <span className="ms-2">
-                  {address.addressLine1}, {address.city}, {address.state},{" "}
-                  {address.postalCode}, {address.country}
-                </span>
-              </label>
-              <div className="d-flex">
-                <button
-                  onClick={() => handleDelete(address._id)}
-                  className="btn btn-danger "
-                >
-                  Delete
-                </button>
-                <button
-                  onClick={() => handleEdit(address)}
-                  className="btn btn-warning mx-2  d-flex flex-wrap"
-                >
-                  Edit
-                </button>
-              </div>
+      <Header />
+      <div className="container my-5">
+        <div className="card shadow-sm border-light p-4">
+          <h3 className="text-center mb-4">Saved Delivery Addresses</h3>
+          {status === "loading" && <div className="text-center">Loading...</div>}
+          {error && <div className="alert alert-danger">{error}</div>}
+          {addresses.length === 0 ? (
+            <div className="alert alert-info text-center">
+              No addresses available. Please add a new address.
             </div>
-          </div>
-        ))}
-        <button onClick={handleAddNew} className="mt-2 btn btn-success">
-          Add New Address
-        </button>
+          ) : (
+            addresses.map((address) => (
+              <div
+                key={address._id}
+                className="card mb-3 shadow-sm border-light"
+                style={{ cursor: "pointer" }}
+              >
+                <div className="card-body d-flex justify-content-between align-items-center">
+                  <div className="d-flex align-items-center">
+                    <input
+                      type="radio"
+                      name="address"
+                      value={address._id}
+                      checked={selectedAddressId === address._id}
+                      onChange={() => handleSelect(address._id)}
+                      className="form-check-input me-3"
+                    />
+                    <div>
+                      <h5 className="card-title">{address.addressLine1}</h5>
+                      <p className="card-text">
+                        {address.city}, {address.state}, {address.country}{" "}
+                        {address.postalCode}
+                      </p>
+                    </div>
+                  </div>
+                  <div>
+                    <button
+                      onClick={() => handleDelete(address._id)}
+                      className="btn btn-outline-danger btn-sm me-2"
+                    >
+                      <i className="bi bi-trash"></i> Delete
+                    </button>
+                    <button
+                      onClick={() => handleEdit(address)}
+                      className="btn btn-outline-warning btn-sm"
+                    >
+                      <i className="bi bi-pencil"></i> Edit
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ))
+          )}
+          <button
+            onClick={handleAddNew}
+            className="btn btn-success w-100 mt-3 d-flex justify-content-center"
+          >
+            <i className="bi bi-plus-lg me-2"></i> Add New Address
+          </button>
+        </div>
       </div>
     </>
   );

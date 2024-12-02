@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router-dom';
-
 import { addAddress, updateAddress } from '../features/address/addressSlice';
 import Header from './Header'
 
@@ -13,6 +12,7 @@ const AddressForm = () => {
   const existingAddress = location.state?.existingAddress;
 
   const [address, setAddress] = useState({
+    name: '',
     addressLine1: '',
     addressLine2: '',
     city: '',
@@ -50,6 +50,10 @@ const AddressForm = () => {
 
       <h2>{existingAddress ? 'Edit Address' : 'Add New Address'}</h2>
     <form onSubmit={handleSubmit} className=''>
+    <div className='mb-3'>
+    <label htmlFor='name'>  UserName: 
+      <input name="name"   className='form-control'
+  value={address.name} onChange={handleChange} placeholder="Name" required /> </label></div><br/> 
       <div className='mb-3'>
       <label htmlFor='addressLine1'>Address Line 1: 
       <input name="addressLine1" value={address.addressLine1}

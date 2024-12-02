@@ -1,9 +1,10 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import CategoryList from "../../components/CategoryList";
-import { fetchCategories } from "../../features/categories/categoriesSlice";
-import Header from "../../components/Header";
+import CategoryList from "../components/CategoryList";
+import { fetchCategories } from "../features/categories/categoriesSlice";
+import Header from "../components/Header";
+import image1 from '../images/image1.png';
 
 const Home = () => {
   const dispatch = useDispatch();
@@ -35,7 +36,7 @@ const Home = () => {
       </div>
       <div className="container pt-3">
         <img
-          src="/images/image1.png"
+          src={image1}
           className="img-fluid"
           alt="banner"
           style={{ objectFit: "cover" }}

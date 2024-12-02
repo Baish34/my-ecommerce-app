@@ -12,6 +12,7 @@ const Wishlist = () => {
   const dispatch = useDispatch();
   const wishlistStatus = useSelector((state) => state.wishlist.status);
   const [wishlistItems, setWishlistItems] = useState([]);
+  const [message, setMessage] = useState(''); // State for success messages
 
   useEffect(() => {
     dispatch(fetchWishlist()).then((response) => {
@@ -24,12 +25,14 @@ const Wishlist = () => {
     setWishlistItems((prevItems) =>
       prevItems.filter((item) => item.productId._id !== productId),
     );
+    setMessage("Product has been removed from your wishlist.");
+    setTimeout(() => setMessage(""), 3000); // Hide message after 3 seconds
   };
 
   const handleAddToCart = (productId) => {
-    console.log("Adding product to cart from wishlist:", productId);
     dispatch(addToCart({ productId, quantity: 1 }));
-    alert(`Product has been added to your cart.`);
+    setMessage("Product has been added to your cart.");
+    setTimeout(() => setMessage(""), 3000); // Hide message after 3 seconds
   };
 
   if (wishlistStatus === "loading") {
@@ -53,6 +56,7 @@ const Wishlist = () => {
       <Header />
       <div className="container my-4">
         <h2 className="text-center mb-4">Your Wishlist</h2>
+        {message && <div className="alert alert-success">{message}</div>} {/* Display success message */}
         {wishlistItems.length > 0 ? (
           <div className="row">
             {wishlistItems.map((item) => {

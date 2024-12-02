@@ -17,7 +17,7 @@ export const addToCart = createAsyncThunk(
   "cart/addToCart",
   async ({ productId, quantity }) => {
     const res = await axios.post(
-      `https://ecommerce-app-backend-red.vercel.app/api/cart/${userId}/items`,
+      `https://ecommerce-app-backend-red.vercel.app/api/cart/${userId}/cart/items`,
       { productId, quantity },
     );
     return res.data.items; // return the updated cart items array

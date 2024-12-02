@@ -1,19 +1,23 @@
 import { useDispatch } from "react-redux";
 import { addToWishlist } from "../features/wishlist/wishlistSlice";
 import { addToCart } from "../features/cart/cartSlice";
+import { useState } from "react";
 
 const ProductCard = ({ product }) => {
   const dispatch = useDispatch();
   const { _id, imageUrl, name, price, rating } = product;
+  const [message, setMessage] = useState('');
 
   const handleAddToWishlist = () => {
     dispatch(addToWishlist({ productId: _id }));
-    alert(`Your Product has been added to your wishlist.`);
+    setMessage("Your product has been added to your wishlist.");
+    setTimeout(() => setMessage(""), 3000); // Hide message after 3 seconds
   };
 
   const handleAddToCart = () => {
     dispatch(addToCart({ productId: _id, quantity: 1 }));
-    alert(`Your Product has been added to your cart.`);
+    setMessage("Your product has been added to your cart.");
+    setTimeout(() => setMessage(""), 3000); // Hide message after 3 seconds
   };
 
   return (
@@ -48,6 +52,7 @@ const ProductCard = ({ product }) => {
             Save to Wishlist
           </button>
         </div>
+        {message && <div className="alert alert-success mt-2">{message}</div>}
       </div>
     </div>
   );
